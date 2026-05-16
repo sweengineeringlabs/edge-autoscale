@@ -25,17 +25,31 @@ mod tests {
     struct AlwaysKneeAtZero;
     impl KneeDetector for AlwaysKneeAtZero {
         fn detect(&self, steps: &[StepResult]) -> Option<usize> {
-            if steps.is_empty() { None } else { Some(0) }
+            if steps.is_empty() {
+                None
+            } else {
+                Some(0)
+            }
         }
     }
 
     struct NeverKnee;
     impl KneeDetector for NeverKnee {
-        fn detect(&self, _steps: &[StepResult]) -> Option<usize> { None }
+        fn detect(&self, _steps: &[StepResult]) -> Option<usize> {
+            None
+        }
     }
 
     fn step(concurrency: usize) -> StepResult {
-        StepResult { concurrency, rps: 100.0, p50_ms: 1.0, p95_ms: 2.0, p99_ms: 3.0, p99_9_ms: 4.0, error_count: 0 }
+        StepResult {
+            concurrency,
+            rps: 100.0,
+            p50_ms: 1.0,
+            p95_ms: 2.0,
+            p99_ms: 3.0,
+            p99_9_ms: 4.0,
+            error_count: 0,
+        }
     }
 
     #[test]

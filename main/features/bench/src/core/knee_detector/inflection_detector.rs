@@ -30,7 +30,7 @@ impl KneeDetector for InflectionDetector {
             return None;
         }
         for i in 1..steps.len() {
-            let delta_p99      = steps[i].p99_ms - steps[i - 1].p99_ms;
+            let delta_p99 = steps[i].p99_ms - steps[i - 1].p99_ms;
             let delta_rps_norm = (steps[i].rps - steps[i - 1].rps) / base_rps;
             if delta_rps_norm <= 0.0 {
                 return Some(i);

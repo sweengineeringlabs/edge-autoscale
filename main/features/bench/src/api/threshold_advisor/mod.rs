@@ -30,9 +30,9 @@ mod tests {
     impl ThresholdAdvisor for HalfMarginAdvisor {
         fn advise(&self, steps: &[StepResult], knee_index: usize, _margin: u8) -> AutoscalePolicy {
             AutoscalePolicy {
-                requests_active_max:  steps[knee_index].concurrency / 2,
+                requests_active_max: steps[knee_index].concurrency / 2,
                 requests_per_sec_max: (steps[knee_index].rps / 2.0) as u64,
-                latency_p99_ms_max:   steps[knee_index].p99_ms / 2.0,
+                latency_p99_ms_max: steps[knee_index].p99_ms / 2.0,
             }
         }
         fn fallback_policy(&self, steps: &[StepResult], margin: u8) -> AutoscalePolicy {
@@ -41,7 +41,15 @@ mod tests {
     }
 
     fn step(concurrency: usize, rps: f64, p99_ms: f64) -> StepResult {
-        StepResult { concurrency, rps, p50_ms: 0.0, p95_ms: 0.0, p99_ms, p99_9_ms: 0.0, error_count: 0 }
+        StepResult {
+            concurrency,
+            rps,
+            p50_ms: 0.0,
+            p95_ms: 0.0,
+            p99_ms,
+            p99_9_ms: 0.0,
+            error_count: 0,
+        }
     }
 
     #[test]

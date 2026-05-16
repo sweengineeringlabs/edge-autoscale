@@ -24,7 +24,7 @@ pub use crate::api::threshold_advisor::ThresholdAdvisor;
 /// println!("{}", report.summary_table());
 /// ```
 pub struct BenchRunner {
-    config:       BenchConfig,
+    config: BenchConfig,
     knee_detector: Arc<dyn KneeDetector>,
 }
 
@@ -32,16 +32,18 @@ impl BenchRunner {
     /// Construct a `BenchRunner`, selecting the knee detection algorithm from
     /// `config.knee_detection.algorithm` (`"plateau"` or `"inflection"`).
     pub fn new(config: BenchConfig) -> Self {
-        let knee_detector: Arc<dyn KneeDetector> =
-            match config.knee_detection.algorithm.as_str() {
-                "plateau" => Arc::new(PlateauDetector {
-                    rps_growth_pct: config.knee_detection.plateau_rps_growth_pct,
-                }),
-                _ => Arc::new(InflectionDetector {
-                    delta_ratio: config.knee_detection.inflection_delta_ratio,
-                }),
-            };
-        Self { config, knee_detector }
+        let knee_detector: Arc<dyn KneeDetector> = match config.knee_detection.algorithm.as_str() {
+            "plateau" => Arc::new(PlateauDetector {
+                rps_growth_pct: config.knee_detection.plateau_rps_growth_pct,
+            }),
+            _ => Arc::new(InflectionDetector {
+                delta_ratio: config.knee_detection.inflection_delta_ratio,
+            }),
+        };
+        Self {
+            config,
+            knee_detector,
+        }
     }
 
     /// Replace the knee detector with a custom implementation (SPI extension).
@@ -55,16 +57,13 @@ impl BenchRunner {
     }
 
     /// Run the full benchmark and return a [`LoadReport`].
-    pub async fn run(
-        &self,
-        handler: Arc<dyn BenchHandler>,
-    ) -> Result<LoadReport, BenchError> {
+    pub async fn run(&self, handler: Arc<dyn BenchHandler>) -> Result<LoadReport, BenchError> {
         if self.config.concurrency_steps.is_empty() {
             return Err(BenchError::NoSteps);
         }
         let runner = TokioLoadRunner {
             handler,
-            warmup_secs:        self.config.warmup_secs,
+            warmup_secs: self.config.warmup_secs,
             step_duration_secs: self.config.step_duration_secs,
         };
         let mut steps = Vec::with_capacity(self.config.concurrency_steps.len());
@@ -72,12 +71,16 @@ impl BenchRunner {
             steps.push(runner.run_step(concurrency).await);
         }
         let knee_index = self.knee_detector.detect(&steps);
-        let advisor    = DefaultThresholdAdvisor;
-        let policy     = match knee_index {
+        let advisor = DefaultThresholdAdvisor;
+        let policy = match knee_index {
             Some(idx) => advisor.advise(&steps, idx, self.config.safety_margin_pct),
-            None      => advisor.fallback_policy(&steps, self.config.safety_margin_pct),
+            None => advisor.fallback_policy(&steps, self.config.safety_margin_pct),
         };
-        Ok(LoadReport { steps, knee_index, policy })
+        Ok(LoadReport {
+            steps,
+            knee_index,
+            policy,
+        })
     }
 }
 
@@ -94,21 +97,21 @@ pub fn adapt_handler<Req, Resp>(
     make_request: impl Fn() -> Req + Send + Sync + 'static,
 ) -> Arc<dyn BenchHandler>
 where
-    Req:  Send + 'static,
+    Req: Send + 'static,
     Resp: Send + 'static,
 {
     struct Adapter<Req, Resp> {
-        handler:      Arc<dyn edge_domain::Handler<Req, Resp>>,
+        handler: Arc<dyn edge_domain::Handler<Req, Resp>>,
         make_request: Box<dyn Fn() -> Req + Send + Sync>,
     }
 
     impl<Req, Resp> BenchHandler for Adapter<Req, Resp>
     where
-        Req:  Send + 'static,
+        Req: Send + 'static,
         Resp: Send + 'static,
     {
         fn call(&self) -> BenchFuture<'_> {
-            let req     = (self.make_request)();
+            let req = (self.make_request)();
             let handler = Arc::clone(&self.handler);
             Box::pin(async move {
                 handler
@@ -142,7 +145,7 @@ impl ApplicationConfigBuilder {
     /// Parse config from a TOML string and return a new builder.
     pub fn with_config(toml_text: &str) -> Result<Self, BenchError> {
         Ok(Self {
-            config:        BenchConfig::from_config(toml_text)?,
+            config: BenchConfig::from_config(toml_text)?,
             knee_detector: None,
         })
     }
@@ -158,7 +161,7 @@ impl ApplicationConfigBuilder {
         let runner = BenchRunner::new(self.config);
         match self.knee_detector {
             Some(d) => runner.with_knee_detector(d),
-            None    => runner,
+            None => runner,
         }
     }
 }

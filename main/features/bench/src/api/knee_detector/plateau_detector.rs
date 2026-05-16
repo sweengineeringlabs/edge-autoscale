@@ -12,17 +12,29 @@ mod tests {
     use crate::api::load_report::StepResult;
 
     fn step(concurrency: usize, rps: f64) -> StepResult {
-        StepResult { concurrency, rps, p50_ms: 0.0, p95_ms: 0.0, p99_ms: 0.0, p99_9_ms: 0.0, error_count: 0 }
+        StepResult {
+            concurrency,
+            rps,
+            p50_ms: 0.0,
+            p95_ms: 0.0,
+            p99_ms: 0.0,
+            p99_9_ms: 0.0,
+            error_count: 0,
+        }
     }
 
     /// Minimal inline implementation of the plateau contract — verifies the
     /// documented invariant without depending on the concrete `PlateauDetector`.
-    struct InlinePlateau { threshold_pct: f64 }
+    struct InlinePlateau {
+        threshold_pct: f64,
+    }
     impl KneeDetector for InlinePlateau {
         fn detect(&self, steps: &[StepResult]) -> Option<usize> {
             for i in 1..steps.len() {
                 let prev = steps[i - 1].rps;
-                if prev <= 0.0 { continue; }
+                if prev <= 0.0 {
+                    continue;
+                }
                 if (steps[i].rps - prev) / prev * 100.0 < self.threshold_pct {
                     return Some(i);
                 }

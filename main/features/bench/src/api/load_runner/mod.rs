@@ -20,13 +20,19 @@ pub trait LoadRunner: Send + Sync {
 mod tests {
     use super::*;
 
-    struct FixedRunner { concurrency_echo: bool }
+    struct FixedRunner {
+        concurrency_echo: bool,
+    }
 
     #[async_trait::async_trait]
     impl LoadRunner for FixedRunner {
         async fn run_step(&self, concurrency: usize) -> StepResult {
             StepResult {
-                concurrency: if self.concurrency_echo { concurrency } else { 0 },
+                concurrency: if self.concurrency_echo {
+                    concurrency
+                } else {
+                    0
+                },
                 rps: 1000.0,
                 p50_ms: 0.5,
                 p95_ms: 1.0,
@@ -39,14 +45,18 @@ mod tests {
 
     #[tokio::test]
     async fn test_run_step_returns_result_with_matching_concurrency() {
-        let r = FixedRunner { concurrency_echo: true };
+        let r = FixedRunner {
+            concurrency_echo: true,
+        };
         let s = r.run_step(8).await;
         assert_eq!(s.concurrency, 8);
     }
 
     #[tokio::test]
     async fn test_run_step_result_has_positive_rps() {
-        let r = FixedRunner { concurrency_echo: true };
+        let r = FixedRunner {
+            concurrency_echo: true,
+        };
         let s = r.run_step(1).await;
         assert!(s.rps > 0.0);
     }

@@ -52,10 +52,21 @@ impl LoadReport {
         out.push_str(&"-".repeat(73));
         out.push('\n');
         for (i, s) in self.steps.iter().enumerate() {
-            let marker = if self.knee_index == Some(i) { "  <- knee" } else { "" };
+            let marker = if self.knee_index == Some(i) {
+                "  <- knee"
+            } else {
+                ""
+            };
             out.push_str(&format!(
                 "{:<12} | {:<12.0} | {:<7.2} | {:<7.2} | {:<8.2} | {:<10.2} | {}{}\n",
-                s.concurrency, s.rps, s.p50_ms, s.p95_ms, s.p99_ms, s.p99_9_ms, s.error_count, marker
+                s.concurrency,
+                s.rps,
+                s.p50_ms,
+                s.p95_ms,
+                s.p99_ms,
+                s.p99_9_ms,
+                s.error_count,
+                marker
             ));
         }
         out.push('\n');
@@ -64,9 +75,7 @@ impl LoadReport {
                 "Knee: concurrency={}\n\n",
                 self.steps[idx].concurrency
             )),
-            None => out.push_str(
-                "Knee: not detected — increase the concurrency_steps range\n\n",
-            ),
+            None => out.push_str("Knee: not detected — increase the concurrency_steps range\n\n"),
         }
         out.push_str(&self.recommended_policy_toml());
         out
@@ -115,14 +124,30 @@ mod tests {
     fn make_report(knee_index: Option<usize>) -> LoadReport {
         LoadReport {
             steps: vec![
-                StepResult { concurrency: 1,  rps: 1000.0, p50_ms: 0.5, p95_ms: 0.8, p99_ms: 1.0, p99_9_ms: 1.5, error_count: 0 },
-                StepResult { concurrency: 2,  rps: 1800.0, p50_ms: 0.6, p95_ms: 0.9, p99_ms: 4.0, p99_9_ms: 8.0, error_count: 1 },
+                StepResult {
+                    concurrency: 1,
+                    rps: 1000.0,
+                    p50_ms: 0.5,
+                    p95_ms: 0.8,
+                    p99_ms: 1.0,
+                    p99_9_ms: 1.5,
+                    error_count: 0,
+                },
+                StepResult {
+                    concurrency: 2,
+                    rps: 1800.0,
+                    p50_ms: 0.6,
+                    p95_ms: 0.9,
+                    p99_ms: 4.0,
+                    p99_9_ms: 8.0,
+                    error_count: 1,
+                },
             ],
             knee_index,
             policy: AutoscalePolicy {
-                requests_active_max:  1,
+                requests_active_max: 1,
                 requests_per_sec_max: 700,
-                latency_p99_ms_max:   0.70,
+                latency_p99_ms_max: 0.70,
             },
         }
     }

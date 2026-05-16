@@ -27,9 +27,9 @@ impl ThresholdAdvisor for DefaultThresholdAdvisor {
 fn apply_margin(s: &StepResult, safety_margin_pct: u8) -> AutoscalePolicy {
     let m = safety_margin_pct as f64 / 100.0;
     AutoscalePolicy {
-        requests_active_max:  (s.concurrency as f64 * m).ceil() as usize,
+        requests_active_max: (s.concurrency as f64 * m).ceil() as usize,
         requests_per_sec_max: (s.rps * m).ceil() as u64,
-        latency_p99_ms_max:   s.p99_ms * m,
+        latency_p99_ms_max: s.p99_ms * m,
     }
 }
 

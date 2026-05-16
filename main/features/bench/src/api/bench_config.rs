@@ -48,20 +48,34 @@ pub struct KneeDetectionConfig {
 impl Default for KneeDetectionConfig {
     fn default() -> Self {
         Self {
-            algorithm:              default_algorithm(),
+            algorithm: default_algorithm(),
             plateau_rps_growth_pct: default_plateau_rps_growth_pct(),
             inflection_delta_ratio: default_inflection_delta_ratio(),
         }
     }
 }
 
-fn default_concurrency_steps() -> Vec<usize>  { vec![1, 2, 4, 8, 16, 32, 64, 128] }
-fn default_step_duration_secs() -> u64        { 10 }
-fn default_warmup_secs()        -> u64        { 2 }
-fn default_safety_margin_pct()  -> u8         { 70 }
-fn default_algorithm()          -> String     { "inflection".into() }
-fn default_plateau_rps_growth_pct() -> f64    { 5.0 }
-fn default_inflection_delta_ratio() -> f64    { 2.0 }
+fn default_concurrency_steps() -> Vec<usize> {
+    vec![1, 2, 4, 8, 16, 32, 64, 128]
+}
+fn default_step_duration_secs() -> u64 {
+    10
+}
+fn default_warmup_secs() -> u64 {
+    2
+}
+fn default_safety_margin_pct() -> u8 {
+    70
+}
+fn default_algorithm() -> String {
+    "inflection".into()
+}
+fn default_plateau_rps_growth_pct() -> f64 {
+    5.0
+}
+fn default_inflection_delta_ratio() -> f64 {
+    2.0
+}
 
 impl BenchConfig {
     /// Parse from a TOML string containing the bench section content.

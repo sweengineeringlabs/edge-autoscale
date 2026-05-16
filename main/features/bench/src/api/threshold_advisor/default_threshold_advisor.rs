@@ -12,19 +12,32 @@ mod tests {
     use crate::api::threshold_advisor::ThresholdAdvisor;
 
     fn step(concurrency: usize, rps: f64, p99_ms: f64) -> StepResult {
-        StepResult { concurrency, rps, p50_ms: 0.0, p95_ms: 0.0, p99_ms, p99_9_ms: 0.0, error_count: 0 }
+        StepResult {
+            concurrency,
+            rps,
+            p50_ms: 0.0,
+            p95_ms: 0.0,
+            p99_ms,
+            p99_9_ms: 0.0,
+            error_count: 0,
+        }
     }
 
     /// Stub that applies the documented safety margin contract directly.
     struct MarginAdvisor;
     impl ThresholdAdvisor for MarginAdvisor {
-        fn advise(&self, steps: &[StepResult], knee_index: usize, safety_margin_pct: u8) -> AutoscalePolicy {
+        fn advise(
+            &self,
+            steps: &[StepResult],
+            knee_index: usize,
+            safety_margin_pct: u8,
+        ) -> AutoscalePolicy {
             let s = &steps[knee_index];
             let m = safety_margin_pct as f64 / 100.0;
             AutoscalePolicy {
-                requests_active_max:  (s.concurrency as f64 * m).ceil() as usize,
+                requests_active_max: (s.concurrency as f64 * m).ceil() as usize,
                 requests_per_sec_max: (s.rps * m).ceil() as u64,
-                latency_p99_ms_max:   s.p99_ms * m,
+                latency_p99_ms_max: s.p99_ms * m,
             }
         }
         fn fallback_policy(&self, steps: &[StepResult], safety_margin_pct: u8) -> AutoscalePolicy {

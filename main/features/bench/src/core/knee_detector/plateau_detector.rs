@@ -50,19 +50,25 @@ mod tests {
 
     #[test]
     fn test_detect_returns_none_when_fewer_than_two_steps() {
-        let d = PlateauDetector { rps_growth_pct: 5.0 };
+        let d = PlateauDetector {
+            rps_growth_pct: 5.0,
+        };
         assert_eq!(d.detect(&[step(1, 100.0)]), None);
     }
 
     #[test]
     fn test_detect_returns_none_for_empty_steps() {
-        let d = PlateauDetector { rps_growth_pct: 5.0 };
+        let d = PlateauDetector {
+            rps_growth_pct: 5.0,
+        };
         assert_eq!(d.detect(&[]), None);
     }
 
     #[test]
     fn test_detect_returns_knee_when_rps_growth_below_threshold() {
-        let d = PlateauDetector { rps_growth_pct: 5.0 };
+        let d = PlateauDetector {
+            rps_growth_pct: 5.0,
+        };
         let steps = vec![
             step(1, 100.0),
             step(2, 190.0), // 90% growth — OK
@@ -73,7 +79,9 @@ mod tests {
 
     #[test]
     fn test_detect_returns_first_knee_not_subsequent_plateau() {
-        let d = PlateauDetector { rps_growth_pct: 5.0 };
+        let d = PlateauDetector {
+            rps_growth_pct: 5.0,
+        };
         let steps = vec![
             step(1, 100.0),
             step(2, 190.0), // 90%
@@ -85,20 +93,24 @@ mod tests {
 
     #[test]
     fn test_detect_returns_none_when_rps_grows_consistently() {
-        let d = PlateauDetector { rps_growth_pct: 5.0 };
+        let d = PlateauDetector {
+            rps_growth_pct: 5.0,
+        };
         let steps = vec![
             step(1, 100.0),
-            step(2, 200.0),  // 100%
-            step(4, 350.0),  // 75%
+            step(2, 200.0), // 100%
+            step(4, 350.0), // 75%
         ];
         assert_eq!(d.detect(&steps), None);
     }
 
     #[test]
     fn test_detect_skips_zero_rps_steps() {
-        let d = PlateauDetector { rps_growth_pct: 5.0 };
+        let d = PlateauDetector {
+            rps_growth_pct: 5.0,
+        };
         let steps = vec![
-            step(1, 0.0),   // prev_rps = 0 → skipped
+            step(1, 0.0), // prev_rps = 0 → skipped
             step(2, 100.0),
             step(4, 101.0), // 1% growth — knee at index 2
         ];

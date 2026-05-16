@@ -55,7 +55,10 @@ mod tests {
     fn test_application_config_builder_has_no_knee_detector_by_default() {
         use crate::api::bench_config::BenchConfig;
         let config = BenchConfig::from_config("").unwrap();
-        let b = ApplicationConfigBuilder { config, knee_detector: None };
+        let b = ApplicationConfigBuilder {
+            config,
+            knee_detector: None,
+        };
         assert!(b.knee_detector.is_none());
     }
 }

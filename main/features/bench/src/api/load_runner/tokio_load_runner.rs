@@ -35,7 +35,10 @@ mod tests {
         let r = ScaledRunner;
         let s1 = r.run_step(1).await;
         let s4 = r.run_step(4).await;
-        assert!(s4.rps > s1.rps, "higher concurrency must produce higher RPS");
+        assert!(
+            s4.rps > s1.rps,
+            "higher concurrency must produce higher RPS"
+        );
     }
 
     #[tokio::test]

@@ -13,8 +13,8 @@ use crate::api::load_runner::LoadRunner;
 /// records per-call latency for successful calls, and returns aggregated
 /// percentiles and throughput.
 pub(crate) struct TokioLoadRunner {
-    pub(crate) handler:            Arc<dyn BenchHandler>,
-    pub(crate) warmup_secs:        u64,
+    pub(crate) handler: Arc<dyn BenchHandler>,
+    pub(crate) warmup_secs: u64,
     pub(crate) step_duration_secs: u64,
 }
 
@@ -58,8 +58,8 @@ impl TokioLoadRunner {
                     while Instant::now() < end {
                         let t0 = Instant::now();
                         match h.call().await {
-                            Ok(())  => durations.push(t0.elapsed()),
-                            Err(_)  => errors += 1,
+                            Ok(()) => durations.push(t0.elapsed()),
+                            Err(_) => errors += 1,
                         }
                     }
                     (durations, errors)
@@ -89,10 +89,10 @@ impl TokioLoadRunner {
 
         StepResult {
             concurrency,
-            rps:      n as f64 / self.step_duration_secs as f64,
-            p50_ms:   pct(50.0),
-            p95_ms:   pct(95.0),
-            p99_ms:   pct(99.0),
+            rps: n as f64 / self.step_duration_secs as f64,
+            p50_ms: pct(50.0),
+            p95_ms: pct(95.0),
+            p99_ms: pct(99.0),
             p99_9_ms: pct(99.9),
             error_count,
         }
@@ -115,13 +115,19 @@ mod tests {
     impl BenchHandler for AlwaysFailHandler {
         fn call(&self) -> BenchFuture<'_> {
             Box::pin(async {
-                Err(crate::api::bench_error::BenchError::StepFailed("forced".into()))
+                Err(crate::api::bench_error::BenchError::StepFailed(
+                    "forced".into(),
+                ))
             })
         }
     }
 
     fn runner(handler: Arc<dyn BenchHandler>, step_duration_secs: u64) -> TokioLoadRunner {
-        TokioLoadRunner { handler, warmup_secs: 0, step_duration_secs }
+        TokioLoadRunner {
+            handler,
+            warmup_secs: 0,
+            step_duration_secs,
+        }
     }
 
     #[tokio::test(flavor = "multi_thread")]
