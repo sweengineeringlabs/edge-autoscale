@@ -71,7 +71,7 @@ impl BenchConfig {
 
     /// Load the crate-shipped SWE defaults from `config/application.toml`.
     pub fn swe_default() -> Result<Self, BenchError> {
-        Self::from_config(include_str!("../../../../config/application.toml"))
+        Self::from_config(include_str!("../../config/application.toml"))
     }
 }
 

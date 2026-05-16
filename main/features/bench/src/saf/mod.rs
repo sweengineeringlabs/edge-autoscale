@@ -9,6 +9,7 @@ use crate::core::threshold_advisor::DefaultThresholdAdvisor;
 pub use crate::api::bench_config::{BenchConfig, KneeDetectionConfig};
 pub use crate::api::bench_error::BenchError;
 pub use crate::api::bench_handler::{BenchFuture, BenchHandler};
+pub use crate::api::builder::ApplicationConfigBuilder;
 pub use crate::api::knee_detector::KneeDetector;
 pub use crate::api::load_report::{AutoscalePolicy, LoadReport, StepResult};
 pub use crate::api::load_runner::LoadRunner;
@@ -123,4 +124,70 @@ where
         handler,
         make_request: Box::new(make_request),
     })
+}
+
+/// Construct an [`ApplicationConfigBuilder`] from a TOML string.
+///
+/// ```rust,ignore
+/// let report = swe_edge_autoscale_bench::builder(include_str!("config/application.toml"))?
+///     .build()
+///     .run(handler)
+///     .await?;
+/// ```
+pub fn builder(toml_text: &str) -> Result<ApplicationConfigBuilder, BenchError> {
+    ApplicationConfigBuilder::with_config(toml_text)
+}
+
+impl ApplicationConfigBuilder {
+    /// Parse config from a TOML string and return a new builder.
+    pub fn with_config(toml_text: &str) -> Result<Self, BenchError> {
+        Ok(Self {
+            config:        BenchConfig::from_config(toml_text)?,
+            knee_detector: None,
+        })
+    }
+
+    /// Override the knee detector (SPI extension — takes precedence over `algorithm` in config).
+    pub fn with_knee_detector(mut self, detector: Arc<dyn KneeDetector>) -> Self {
+        self.knee_detector = Some(detector);
+        self
+    }
+
+    /// Finalize and produce a configured [`BenchRunner`].
+    pub fn build(self) -> BenchRunner {
+        let runner = BenchRunner::new(self.config);
+        match self.knee_detector {
+            Some(d) => runner.with_knee_detector(d),
+            None    => runner,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_builder_with_config_parses_valid_toml() {
+        let b = ApplicationConfigBuilder::with_config("safety_margin_pct = 80").unwrap();
+        assert_eq!(b.config.safety_margin_pct, 80);
+    }
+
+    #[test]
+    fn test_builder_with_config_returns_error_on_invalid_toml() {
+        assert!(ApplicationConfigBuilder::with_config("[[bad").is_err());
+    }
+
+    #[test]
+    fn test_builder_build_returns_bench_runner() {
+        let runner = ApplicationConfigBuilder::with_config("").unwrap().build();
+        // BenchRunner is not Clone — just verify construction doesn't panic.
+        drop(runner);
+    }
+
+    #[test]
+    fn test_builder_factory_fn_parses_config() {
+        let b = builder("safety_margin_pct = 60").unwrap();
+        assert_eq!(b.config.safety_margin_pct, 60);
+    }
 }
