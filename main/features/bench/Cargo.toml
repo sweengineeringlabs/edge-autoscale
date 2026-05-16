@@ -1,0 +1,30 @@
+[package]
+name                   = "swe-edge-autoscale-bench"
+version.workspace      = true
+edition.workspace      = true
+license.workspace      = true
+rust-version.workspace = true
+authors.workspace      = true
+repository.workspace   = true
+description            = "edge — autoscale bench: load runner and saturation knee detector for autoscale threshold calibration"
+keywords               = ["autoscale", "bench", "load-runner", "sea", "swe"]
+categories             = ["development-tools"]
+
+[package.metadata.struct-engine]
+application_type = "lib"
+service_type     = "processor"
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+serde.workspace       = true
+thiserror.workspace   = true
+async-trait.workspace = true
+tokio.workspace       = true
+toml.workspace        = true
+edge-domain.workspace = true
+
+[[test]]
+name = "bench_runner_int_test"
+path = "tests/bench_runner_int_test.rs"
