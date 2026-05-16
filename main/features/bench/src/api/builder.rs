@@ -24,11 +24,13 @@ pub struct ApplicationConfigBuilder {
 /// Reads project metadata from `main/config/architecture.toml` at build time.
 /// Not typically constructed directly — provided here to satisfy the
 /// `<name>.toml → <Name>ConfigBuilder` convention for `architecture.toml`.
+#[cfg(test)]
 pub struct ArchitectureConfigBuilder {
     /// Project name from `[project].name`.
     pub(crate) name: String,
 }
 
+#[cfg(test)]
 impl ArchitectureConfigBuilder {
     /// Construct with the given project name.
     pub(crate) fn new(name: impl Into<String>) -> Self {
