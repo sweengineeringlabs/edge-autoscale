@@ -2,18 +2,17 @@
 
 pub(crate) mod tokio_load_runner;
 
-use async_trait::async_trait;
+use futures::future::BoxFuture;
 
 use crate::api::load_report::StepResult;
 
 /// Runs one concurrency step and returns the measured results.
 ///
 /// The concrete implementation is [`crate::core::load_runner::TokioLoadRunner`].
-#[async_trait]
 pub trait LoadRunner: Send + Sync {
     /// Drive `concurrency` concurrent tasks for the configured duration and
     /// return the aggregate latency histogram and throughput for this step.
-    async fn run_step(&self, concurrency: usize) -> StepResult;
+    fn run_step(&self, concurrency: usize) -> BoxFuture<'_, StepResult>;
 }
 
 #[cfg(test)]
@@ -24,22 +23,20 @@ mod tests {
         concurrency_echo: bool,
     }
 
-    #[async_trait::async_trait]
     impl LoadRunner for FixedRunner {
-        async fn run_step(&self, concurrency: usize) -> StepResult {
-            StepResult {
-                concurrency: if self.concurrency_echo {
-                    concurrency
-                } else {
-                    0
-                },
-                rps: 1000.0,
-                p50_ms: 0.5,
-                p95_ms: 1.0,
-                p99_ms: 2.0,
-                p99_9_ms: 4.0,
-                error_count: 0,
-            }
+        fn run_step(&self, concurrency: usize) -> BoxFuture<'_, StepResult> {
+            let concurrency_echo = self.concurrency_echo;
+            Box::pin(async move {
+                StepResult {
+                    concurrency: if concurrency_echo { concurrency } else { 0 },
+                    rps: 1000.0,
+                    p50_ms: 0.5,
+                    p95_ms: 1.0,
+                    p99_ms: 2.0,
+                    p99_9_ms: 4.0,
+                    error_count: 0,
+                }
+            })
         }
     }
 

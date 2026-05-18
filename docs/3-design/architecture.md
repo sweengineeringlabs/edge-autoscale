@@ -151,13 +151,6 @@ autoscale/
         │       │   └── mod.rs               # BenchRunner factory, re-exports
         │       ├── spi.rs                   # KneeDetector extension hook
         │       └── lib.rs
-        └── examples/                        # swe-edge-autoscale-examples
-            └── src/
-                └── bin/
-                    └── echo_bench.rs        # minimal runnable example
-```
-
-### Dependency Rules
 
 - **saf/** constructs `TokioLoadRunner`, selects the configured `KneeDetector` impl, builds `BenchRunner`; returns `LoadReport`
 - **api/** declares `KneeDetector`, `LoadRunner`, `ThresholdAdvisor` traits and `BenchConfig`, `StepResult`, `LoadReport`, `AutoscalePolicy` value objects — no external deps except `serde`
@@ -381,5 +374,4 @@ No ingress, egress, or runtime crates are dependencies. The bench crate is inten
 
 - [Edge Architecture](../../../docs/3-architecture/architecture.md)
 - [Deployment Guide — Kubernetes HPA Configuration](../../../docs/6-operations/deployment_guide.md#kubernetes-hpa-configuration)
-- [ADR-003 — Bench algorithm selection](adr/ADR-003-bench-knee-detection.md) *(planned)*
 - [GitHub Issue #66](https://github.com/sweengineeringlabs/edge/issues/66)

@@ -3,7 +3,7 @@
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 
-use async_trait::async_trait;
+use futures::future::BoxFuture;
 
 use crate::api::bench_handler::BenchHandler;
 use crate::api::load_report::StepResult;
@@ -18,11 +18,12 @@ pub(crate) struct TokioLoadRunner {
     pub(crate) step_duration_secs: u64,
 }
 
-#[async_trait]
 impl LoadRunner for TokioLoadRunner {
-    async fn run_step(&self, concurrency: usize) -> StepResult {
-        self.warmup(concurrency).await;
-        self.measure(concurrency).await
+    fn run_step(&self, concurrency: usize) -> BoxFuture<'_, StepResult> {
+        Box::pin(async move {
+            self.warmup(concurrency).await;
+            self.measure(concurrency).await
+        })
     }
 }
 
