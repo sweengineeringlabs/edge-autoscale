@@ -9,24 +9,27 @@
 
 #[cfg(test)]
 mod tests {
+    use futures::future::BoxFuture;
+
     use crate::api::load_report::StepResult;
     use crate::api::load_runner::LoadRunner;
 
     /// Stub that returns a step with RPS = concurrency * 100.
     struct ScaledRunner;
 
-    #[async_trait::async_trait]
     impl LoadRunner for ScaledRunner {
-        async fn run_step(&self, concurrency: usize) -> StepResult {
-            StepResult {
-                concurrency,
-                rps: concurrency as f64 * 100.0,
-                p50_ms: 0.1,
-                p95_ms: 0.5,
-                p99_ms: 1.0,
-                p99_9_ms: 2.0,
-                error_count: 0,
-            }
+        fn run_step(&self, concurrency: usize) -> BoxFuture<'_, StepResult> {
+            Box::pin(async move {
+                StepResult {
+                    concurrency,
+                    rps: concurrency as f64 * 100.0,
+                    p50_ms: 0.1,
+                    p95_ms: 0.5,
+                    p99_ms: 1.0,
+                    p99_9_ms: 2.0,
+                    error_count: 0,
+                }
+            })
         }
     }
 
