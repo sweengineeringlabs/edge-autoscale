@@ -1,3 +1,4 @@
+pub(crate) mod application_config_builder;
 pub(crate) mod bench_config;
 pub(crate) mod bench_error;
 pub(crate) mod bench_handler;
