@@ -1,25 +1,4 @@
-//! Builder type declarations (public types live in `api/`).
-//!
-//! Impl blocks live in [`crate::saf`]. This file declares the struct
-//! shapes so types are anchored in the interface layer.
-
-use std::sync::Arc;
-
-use crate::api::bench_config::BenchConfig;
-use crate::api::knee_detector::KneeDetector;
-
-/// Opaque builder for `swe-edge-autoscale-bench`.
-///
-/// Construct via [`crate::builder`] or [`ApplicationConfigBuilder::with_config`].
-/// Finalize with [`ApplicationConfigBuilder::build`].
-pub struct ApplicationConfigBuilder {
-    /// Parsed bench configuration.
-    pub(crate) config: BenchConfig,
-    /// Optional custom knee detector (overrides the algorithm in config).
-    pub(crate) knee_detector: Option<Arc<dyn KneeDetector>>,
-}
-
-/// Builder for workspace architectural configuration.
+//! Builder for workspace architectural configuration.
 ///
 /// Reads project metadata from `main/config/architecture.toml` at build time.
 /// Not typically constructed directly — provided here to satisfy the

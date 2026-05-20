@@ -6,6 +6,7 @@ use crate::core::knee_detector::{InflectionDetector, PlateauDetector};
 use crate::core::load_runner::TokioLoadRunner;
 use crate::core::threshold_advisor::DefaultThresholdAdvisor;
 
+pub use crate::api::architecture_config_builder::ArchitectureConfigBuilder;
 pub use crate::api::bench_config::{BenchConfig, KneeDetectionConfig};
 pub use crate::api::bench_error::BenchError;
 pub use crate::api::bench_handler::{BenchFuture, BenchHandler};
