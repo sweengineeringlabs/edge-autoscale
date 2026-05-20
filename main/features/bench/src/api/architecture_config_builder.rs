@@ -9,6 +9,7 @@
 /// Not typically constructed directly — provided here to satisfy the
 /// `<name>.toml → <Name>ConfigBuilder` convention for `architecture.toml`.
 #[derive(Debug, Default)]
+#[allow(dead_code)]
 pub struct ArchitectureConfigBuilder {
     _private: (),
 }
