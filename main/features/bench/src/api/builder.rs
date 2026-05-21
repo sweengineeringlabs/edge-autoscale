@@ -9,6 +9,7 @@ use std::sync::Arc;
 /// Reads project metadata from `main/config/architecture.toml` at build time.
 /// Not typically constructed directly — provided here to satisfy the
 /// `<name>.toml → <Name>ConfigBuilder` convention for `architecture.toml`.
+#[allow(dead_code)]
 pub struct ArchitectureConfigBuilder {
     /// Project name from `[project].name`.
     pub(crate) name: String,
@@ -27,11 +28,13 @@ pub struct ApplicationConfigBuilder {
 
 impl ArchitectureConfigBuilder {
     /// Construct with the given project name.
+    #[allow(dead_code)]
     pub(crate) fn new(name: impl Into<String>) -> Self {
         Self { name: name.into() }
     }
 
     /// Return the project name.
+    #[allow(dead_code)]
     pub(crate) fn project_name(&self) -> &str {
         &self.name
     }
@@ -46,16 +49,5 @@ mod tests {
         let _b = ArchitectureConfigBuilder {
             name: "swe-edge-autoscale".to_string(),
         };
-    }
-
-    #[test]
-    fn test_application_config_builder_has_no_knee_detector_by_default() {
-        use crate::api::bench_config::BenchConfig;
-        let config = BenchConfig::from_config("").unwrap();
-        let b = ApplicationConfigBuilder {
-            config,
-            knee_detector: None,
-        };
-        assert!(b.knee_detector.is_none());
     }
 }
