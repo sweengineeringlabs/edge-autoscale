@@ -3,6 +3,7 @@
 /// Reads project metadata from `main/config/architecture.toml` at build time.
 /// Not typically constructed directly — provided here to satisfy the
 /// `<name>.toml → <Name>ConfigBuilder` convention for `architecture.toml`.
+#[allow(dead_code)]
 pub struct ArchitectureConfigBuilder {
     /// Project name from `[project].name`.
     pub(crate) name: String,

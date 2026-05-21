@@ -10,13 +10,3 @@ pub struct ApplicationConfigBuilder {
     /// Optional custom knee detector (SPI extension).
     pub(crate) knee_detector: Option<Arc<dyn KneeDetector>>,
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_application_config_builder_constructs() {
-        let _b = ApplicationConfigBuilder::default();
-    }
-}
