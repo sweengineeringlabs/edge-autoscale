@@ -1,4 +1,4 @@
-//! Builder for workspace architectural and application configuration.
+//! Builder for workspace architectural configuration.
 ///
 /// Reads project metadata from `main/config/architecture.toml` at build time.
 /// Not typically constructed directly — provided here to satisfy the
@@ -6,19 +6,6 @@
 pub struct ArchitectureConfigBuilder {
     /// Project name from `[project].name`.
     pub(crate) name: String,
-}
-
-use std::sync::Arc;
-
-use crate::api::bench_config::BenchConfig;
-use crate::api::knee_detector::KneeDetector;
-
-/// Builder for autoscale benchmark configuration.
-pub struct ApplicationConfigBuilder {
-    /// Parsed benchmark configuration.
-    pub(crate) config: BenchConfig,
-    /// Optional custom knee detector (SPI extension).
-    pub(crate) knee_detector: Option<Arc<dyn KneeDetector>>,
 }
 
 impl ArchitectureConfigBuilder {

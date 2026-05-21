@@ -1,8 +1,14 @@
-/// Builder for configuration.
-#[derive(Debug, Default)]
-#[allow(dead_code)]
+use std::sync::Arc;
+
+use crate::api::bench_config::BenchConfig;
+use crate::api::knee_detector::KneeDetector;
+
+/// Builder for autoscale benchmark configuration with optional SPI extensions.
 pub struct ApplicationConfigBuilder {
-    _private: (),
+    /// Parsed benchmark configuration.
+    pub(crate) config: BenchConfig,
+    /// Optional custom knee detector (SPI extension).
+    pub(crate) knee_detector: Option<Arc<dyn KneeDetector>>,
 }
 
 #[cfg(test)]
