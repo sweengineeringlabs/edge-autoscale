@@ -10,7 +10,6 @@ pub use crate::api::architecture_config_builder::ArchitectureConfigBuilder;
 pub use crate::api::bench_config::{BenchConfig, KneeDetectionConfig};
 pub use crate::api::bench_error::BenchError;
 pub use crate::api::bench_handler::{BenchFuture, BenchHandler};
-pub use crate::api::builder::ApplicationConfigBuilder;
 pub use crate::api::knee_detector::KneeDetector;
 pub use crate::api::load_report::{AutoscalePolicy, LoadReport, StepResult};
 pub use crate::api::load_runner::LoadRunner;
