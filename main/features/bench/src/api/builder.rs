@@ -11,11 +11,13 @@ pub struct ArchitectureConfigBuilder {
 
 impl ArchitectureConfigBuilder {
     /// Construct with the given project name.
+    #[allow(dead_code)]
     pub(crate) fn new(name: impl Into<String>) -> Self {
         Self { name: name.into() }
     }
 
     /// Return the project name.
+    #[allow(dead_code)]
     pub(crate) fn project_name(&self) -> &str {
         &self.name
     }
