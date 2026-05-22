@@ -142,20 +142,6 @@ pub fn builder(toml_text: &str) -> Result<ApplicationConfigBuilder, BenchError> 
 }
 
 impl ApplicationConfigBuilder {
-    /// Parse config from a TOML string and return a new builder.
-    pub fn with_config(toml_text: &str) -> Result<Self, BenchError> {
-        Ok(Self {
-            config: BenchConfig::from_config(toml_text)?,
-            knee_detector: None,
-        })
-    }
-
-    /// Override the knee detector (SPI extension — takes precedence over `algorithm` in config).
-    pub fn with_knee_detector(mut self, detector: Arc<dyn KneeDetector>) -> Self {
-        self.knee_detector = Some(detector);
-        self
-    }
-
     /// Finalize and produce a configured [`BenchRunner`].
     pub fn build(self) -> BenchRunner {
         let runner = BenchRunner::new(self.config);
