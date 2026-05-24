@@ -1,12 +1,19 @@
 //! SAF layer — autoscale-bench public facade.
 
+use swe_edge_configbuilder::ConfigBuilder as _;
 use std::sync::Arc;
 
 use crate::core::knee_detector::{InflectionDetector, PlateauDetector};
 use crate::core::load_runner::TokioLoadRunner;
 use crate::core::threshold_advisor::DefaultThresholdAdvisor;
 
-pub use crate::api::application_config_builder::ApplicationConfigBuilder;
+/// Return a [`ConfigBuilder`] pre-seeded with this crate's package name and version.
+pub fn create_config_builder() -> impl swe_edge_configbuilder::ConfigBuilder {
+    swe_edge_configbuilder::create_config_builder()
+        .with_name(env!("CARGO_PKG_NAME"))
+        .with_version(env!("CARGO_PKG_VERSION"))
+}
+
 pub use crate::api::bench_config::{BenchConfig, KneeDetectionConfig};
 pub use crate::api::bench_error::BenchError;
 pub use crate::api::bench_handler::{BenchFuture, BenchHandler};
@@ -18,9 +25,11 @@ pub use crate::api::threshold_advisor::ThresholdAdvisor;
 /// Entry point for running a saturation benchmark.
 ///
 /// ```rust,ignore
-/// let config  = BenchConfig::swe_default().unwrap();
+/// use swe_edge_configbuilder::ConfigSection as _;
+/// let loader = swe_edge_autoscale_bench::create_config_builder().build_loader();
+/// let config = swe_edge_autoscale_bench::BenchConfig::load(&loader).unwrap();
 /// let handler = adapt_handler(echo_handler("ping", "/ping"), || "ping".to_string());
-/// let report  = BenchRunner::new(config).run(handler).await.unwrap();
+/// let report = BenchRunner::new(config).run(handler).await.unwrap();
 /// println!("{}", report.summary_table());
 /// ```
 pub struct BenchRunner {
@@ -129,54 +138,40 @@ where
     })
 }
 
-/// Construct an [`ApplicationConfigBuilder`] from a TOML string.
-///
-/// ```rust,ignore
-/// let report = swe_edge_autoscale_bench::builder(include_str!("config/application.toml"))?
-///     .build()
-///     .run(handler)
-///     .await?;
-/// ```
-pub fn builder(toml_text: &str) -> Result<ApplicationConfigBuilder, BenchError> {
-    ApplicationConfigBuilder::with_config(toml_text)
-}
-
-impl ApplicationConfigBuilder {
-    /// Finalize and produce a configured [`BenchRunner`].
-    pub fn build(self) -> BenchRunner {
-        let runner = BenchRunner::new(self.config);
-        match self.knee_detector {
-            Some(d) => runner.with_knee_detector(d),
-            None => runner,
-        }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
+    use swe_edge_configbuilder::ConfigSection as _;
 
+    /// @covers: BenchConfig::section_name
     #[test]
-    fn test_builder_with_config_parses_valid_toml() {
-        let b = ApplicationConfigBuilder::with_config("safety_margin_pct = 80").unwrap();
-        assert_eq!(b.config.safety_margin_pct, 80);
+    fn test_bench_config_section_name_is_bench() {
+        assert_eq!(BenchConfig::section_name(), "bench");
     }
 
+    /// @covers: BenchRunner::new
     #[test]
-    fn test_builder_with_config_returns_error_on_invalid_toml() {
-        assert!(ApplicationConfigBuilder::with_config("[[bad").is_err());
+    fn test_bench_runner_new_constructs_from_default_config() {
+        let _runner = BenchRunner::new(BenchConfig::default());
     }
 
+    /// @covers: BenchRunner::with_knee_detector
     #[test]
-    fn test_builder_build_returns_bench_runner() {
-        let runner = ApplicationConfigBuilder::with_config("").unwrap().build();
-        // BenchRunner is not Clone — just verify construction doesn't panic.
-        drop(runner);
+    fn test_bench_runner_with_knee_detector_replaces_detector() {
+        use crate::api::load_report::StepResult;
+        struct AlwaysNone;
+        impl KneeDetector for AlwaysNone {
+            fn detect(&self, _steps: &[StepResult]) -> Option<usize> {
+                None
+            }
+        }
+        let _runner =
+            BenchRunner::new(BenchConfig::default()).with_knee_detector(Arc::new(AlwaysNone));
     }
 
+    /// @covers: create_config_builder
     #[test]
-    fn test_builder_factory_fn_parses_config() {
-        let b = builder("safety_margin_pct = 60").unwrap();
-        assert_eq!(b.config.safety_margin_pct, 60);
+    fn test_create_config_builder_builds_loader() {
+        let _loader = create_config_builder().build_loader();
     }
 }

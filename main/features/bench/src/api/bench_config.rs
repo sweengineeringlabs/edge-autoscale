@@ -2,10 +2,10 @@
 
 use serde::Deserialize;
 
-use crate::api::bench_error::BenchError;
-
-/// Top-level bench configuration. Deserializes from a TOML string whose
-/// content matches the `[bench]` section of `application.toml`.
+/// Top-level bench configuration.
+///
+/// Loaded from the `[bench]` section of `application.toml` via
+/// [`swe_edge_configbuilder::ConfigSection::load`].
 #[derive(Debug, Clone, Deserialize)]
 pub struct BenchConfig {
     /// Concurrency levels to probe, in ascending order.
@@ -27,6 +27,24 @@ pub struct BenchConfig {
     /// Knee detection sub-configuration.
     #[serde(default)]
     pub knee_detection: KneeDetectionConfig,
+}
+
+impl Default for BenchConfig {
+    fn default() -> Self {
+        Self {
+            concurrency_steps: default_concurrency_steps(),
+            step_duration_secs: default_step_duration_secs(),
+            warmup_secs: default_warmup_secs(),
+            safety_margin_pct: default_safety_margin_pct(),
+            knee_detection: KneeDetectionConfig::default(),
+        }
+    }
+}
+
+impl swe_edge_configbuilder::ConfigSection for BenchConfig {
+    fn section_name() -> &'static str {
+        "bench"
+    }
 }
 
 /// Knee detection algorithm and sensitivity parameters.
@@ -77,39 +95,50 @@ fn default_inflection_delta_ratio() -> f64 {
     2.0
 }
 
-impl BenchConfig {
-    /// Parse from a TOML string containing the bench section content.
-    pub fn from_config(toml_text: &str) -> Result<Self, BenchError> {
-        toml::from_str(toml_text).map_err(|e| BenchError::ConfigParseFailed(e.to_string()))
-    }
-
-    /// Load the crate-shipped SWE defaults from `config/application.toml`.
-    pub fn swe_default() -> Result<Self, BenchError> {
-        Self::from_config(include_str!("../../config/application.toml"))
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
+    use swe_edge_configbuilder::ConfigSection as _;
 
+    /// @covers: BenchConfig::default
     #[test]
-    fn test_from_config_parses_minimal_toml() {
-        let cfg = BenchConfig::from_config("").unwrap();
-        assert_eq!(cfg.concurrency_steps, default_concurrency_steps());
-        assert_eq!(cfg.step_duration_secs, default_step_duration_secs());
-        assert_eq!(cfg.safety_margin_pct, default_safety_margin_pct());
+    fn test_bench_config_default_uses_expected_concurrency_steps() {
+        assert_eq!(
+            BenchConfig::default().concurrency_steps,
+            vec![1, 2, 4, 8, 16, 32, 64, 128]
+        );
     }
 
+    /// @covers: BenchConfig::default
     #[test]
-    fn test_from_config_overrides_concurrency_steps() {
-        let cfg = BenchConfig::from_config("concurrency_steps = [1, 4, 16]").unwrap();
+    fn test_bench_config_default_safety_margin_pct_is_70() {
+        assert_eq!(BenchConfig::default().safety_margin_pct, 70);
+    }
+
+    /// @covers: ConfigSection::section_name
+    #[test]
+    fn test_bench_config_section_name_is_bench() {
+        assert_eq!(BenchConfig::section_name(), "bench");
+    }
+
+    /// @covers: BenchConfig serde
+    #[test]
+    fn test_bench_config_deserializes_safety_margin_override() {
+        let cfg: BenchConfig = toml::from_str("safety_margin_pct = 80").unwrap();
+        assert_eq!(cfg.safety_margin_pct, 80);
+    }
+
+    /// @covers: BenchConfig serde
+    #[test]
+    fn test_bench_config_deserializes_concurrency_steps_override() {
+        let cfg: BenchConfig = toml::from_str("concurrency_steps = [1, 4, 16]").unwrap();
         assert_eq!(cfg.concurrency_steps, vec![1, 4, 16]);
     }
 
+    /// @covers: BenchConfig serde
     #[test]
-    fn test_from_config_overrides_knee_detection_algorithm() {
-        let cfg = BenchConfig::from_config(
+    fn test_bench_config_deserializes_knee_detection_section() {
+        let cfg: BenchConfig = toml::from_str(
             "[knee_detection]\nalgorithm = \"plateau\"\nplateau_rps_growth_pct = 10.0\ninflection_delta_ratio = 3.0",
         )
         .unwrap();
@@ -117,14 +146,9 @@ mod tests {
         assert!((cfg.knee_detection.plateau_rps_growth_pct - 10.0).abs() < f64::EPSILON);
     }
 
+    /// @covers: BenchConfig serde
     #[test]
-    fn test_from_config_returns_error_on_invalid_toml() {
-        let err = BenchConfig::from_config("concurrency_steps = [[[").unwrap_err();
-        assert!(matches!(err, BenchError::ConfigParseFailed(_)));
-    }
-
-    #[test]
-    fn test_swe_default_loads_without_error() {
-        BenchConfig::swe_default().unwrap();
+    fn test_bench_config_rejects_invalid_toml() {
+        assert!(toml::from_str::<BenchConfig>("concurrency_steps = [[[").is_err());
     }
 }

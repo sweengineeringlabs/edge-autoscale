@@ -3,10 +3,6 @@
 /// Errors produced by the bench crate.
 #[derive(Debug, thiserror::Error)]
 pub enum BenchError {
-    /// TOML config failed to deserialize as [`super::bench_config::BenchConfig`].
-    #[error("swe_edge_autoscale_bench: config parse failed — {0}")]
-    ConfigParseFailed(String),
-
     /// A single handler call returned an error during a measurement step.
     #[error("swe_edge_autoscale_bench: handler call failed — {0}")]
     StepFailed(String),
@@ -19,13 +15,6 @@ pub enum BenchError {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_config_parse_failed_display_names_crate() {
-        let e = BenchError::ConfigParseFailed("bad toml".into());
-        assert!(e.to_string().contains("swe_edge_autoscale_bench"));
-        assert!(e.to_string().contains("bad toml"));
-    }
 
     #[test]
     fn test_step_failed_display_includes_message() {

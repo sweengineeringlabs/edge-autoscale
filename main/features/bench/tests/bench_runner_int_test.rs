@@ -4,7 +4,7 @@ use edge_domain::echo_handler;
 use swe_edge_autoscale_bench::{adapt_handler, BenchConfig, BenchRunner};
 
 fn fast_config() -> BenchConfig {
-    BenchConfig::from_config(
+    toml::from_str(
         "concurrency_steps = [1, 2]\nstep_duration_secs = 1\nwarmup_secs = 0\nsafety_margin_pct = 70",
     )
     .unwrap()
@@ -79,7 +79,7 @@ async fn test_bench_runner_json_output_is_valid_structure() {
 
 #[tokio::test(flavor = "multi_thread")]
 async fn test_bench_runner_with_plateau_algorithm_completes() {
-    let config = BenchConfig::from_config(
+    let config: BenchConfig = toml::from_str(
         "concurrency_steps = [1, 2]\nstep_duration_secs = 1\nwarmup_secs = 0\nsafety_margin_pct = 70\n[knee_detection]\nalgorithm = \"plateau\"\nplateau_rps_growth_pct = 5.0\ninflection_delta_ratio = 2.0",
     )
     .unwrap();
@@ -91,7 +91,7 @@ async fn test_bench_runner_with_plateau_algorithm_completes() {
 
 #[tokio::test]
 async fn test_bench_runner_returns_error_for_empty_concurrency_steps() {
-    let config = BenchConfig::from_config("concurrency_steps = []").unwrap();
+    let config: BenchConfig = toml::from_str("concurrency_steps = []").unwrap();
     let handler = adapt_handler(echo_handler("ping", "/ping"), || "ping".to_string());
     let result = BenchRunner::new(config).run(handler).await;
 
