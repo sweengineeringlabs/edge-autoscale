@@ -1,9 +1,10 @@
+[bench]
 concurrency_steps      = [1, 2, 4, 8, 16, 32, 64, 128]
 step_duration_secs     = 10
 warmup_secs            = 2
 safety_margin_pct      = 70
 
-[knee_detection]
+[bench.knee_detection]
 algorithm              = "inflection"
 plateau_rps_growth_pct = 5.0
 inflection_delta_ratio = 2.0
