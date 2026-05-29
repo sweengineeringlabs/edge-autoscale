@@ -24,7 +24,7 @@ futures.workspace     = true
 tokio.workspace       = true
 toml.workspace        = true
 edge-domain.workspace  = true
-swe-edge-configbuilder = { git = "ssh://git@github.com/sweengineeringlabs/edge.git", tag = "v0.4.5" }
+swe-edge-configbuilder = { path = "../../../../configbuilder/main/features/configbuilder" }
 
 [[test]]
 name = "bench_runner_int_test"
