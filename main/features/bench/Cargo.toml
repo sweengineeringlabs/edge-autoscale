@@ -22,10 +22,49 @@ serde.workspace       = true
 thiserror.workspace   = true
 futures.workspace     = true
 tokio.workspace       = true
-toml.workspace        = true
 edge-domain.workspace  = true
-swe-edge-configbuilder = { path = "../../../../configbuilder/main/features/configbuilder" }
+swe-edge-configbuilder.workspace = true
+
+[dev-dependencies]
+toml.workspace                   = true
+swe-edge-configbuilder.workspace = true
 
 [[test]]
 name = "bench_runner_int_test"
 path = "tests/bench_runner_int_test.rs"
+
+[[test]]
+name = "configbuilder_int_test"
+path = "tests/configbuilder_int_test.rs"
+
+[[test]]
+name = "validator_int_test"
+path = "tests/validator_int_test.rs"
+
+[[test]]
+name = "processor_int_test"
+path = "tests/processor_int_test.rs"
+
+[[test]]
+name = "saf_bench_int_test"
+path = "tests/saf_bench_int_test.rs"
+
+[[test]]
+name = "api_types_int_test"
+path = "tests/api_types_int_test.rs"
+
+[[test]]
+name = "knee_detector_int_test"
+path = "tests/knee_detector_int_test.rs"
+
+[[test]]
+name = "gateway_egress_int_test"
+path = "tests/gateway_egress_int_test.rs"
+
+[[test]]
+name = "gateway_ingress_int_test"
+path = "tests/gateway_ingress_int_test.rs"
+
+[lints.clippy]
+unwrap_used = "deny"
+expect_used = "deny"

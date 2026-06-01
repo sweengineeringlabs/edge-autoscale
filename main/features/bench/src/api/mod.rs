@@ -1,7 +1,12 @@
-pub(crate) mod bench_config;
-pub(crate) mod bench_error;
-pub(crate) mod bench_handler;
-pub(crate) mod knee_detector;
-pub(crate) mod load_report;
-pub(crate) mod load_runner;
-pub(crate) mod threshold_advisor;
+//! API layer — public trait and type definitions.
+
+pub(crate) mod advisor;
+pub(crate) mod bench;
+pub(crate) mod error;
+pub(crate) mod knee;
+pub(crate) mod outcome;
+pub(crate) mod processor;
+pub(crate) mod step;
+pub(crate) mod traits;
+pub(crate) mod types;
+pub(crate) mod validator;

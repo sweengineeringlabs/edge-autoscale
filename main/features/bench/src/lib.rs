@@ -10,14 +10,17 @@
 //!
 //! ```rust,ignore
 //! use std::sync::Arc;
-//! use swe_edge_autoscale_bench::{BenchRunner, BenchConfig, adapt_handler};
-//! use edge_domain::echo_handler;
+//! use swe_edge_autoscale_bench::{BenchFacade, BenchConfig};
+//! use edge_domain::Domain;
 //!
 //! #[tokio::main]
 //! async fn main() {
-//!     let config  = BenchConfig::swe_default().unwrap();
-//!     let handler = adapt_handler(echo_handler("ping", "/ping"), || "ping".to_string());
-//!     let report  = BenchRunner::new(config).run(handler).await.unwrap();
+//!     let config  = BenchConfig::default();
+//!     let handler = BenchFacade::adapt_handler(
+//!         Domain::echo_handler("ping", "/ping"),
+//!         || "ping".to_string(),
+//!     );
+//!     let report  = BenchFacade::create_bench_runner(config).run(handler).await.unwrap();
 //!     println!("{}", report.summary_table());
 //! }
 //! ```
@@ -27,6 +30,8 @@
 
 mod api;
 mod core;
+mod gateway;
 mod saf;
+mod spi;
 
-pub use saf::*;
+pub use gateway::egress::*;
