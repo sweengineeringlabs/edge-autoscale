@@ -1,0 +1,15 @@
+{
+  "members": [
+    {
+      "failed": 1,
+      "member": "main/features/bench",
+      "passed": 161,
+      "skipped": 0
+    }
+  ],
+  "mode": "package",
+  "timestamp": "2026-06-02T06:07:45.021927900+02:00",
+  "total_failed": 1,
+  "total_members": 1,
+  "total_passed": 161
+}
