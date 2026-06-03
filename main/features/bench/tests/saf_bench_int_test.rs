@@ -1,5 +1,7 @@
 //! Integration tests for all public `BenchFacade` methods.
 
+#![allow(clippy::unwrap_used, clippy::expect_used)]
+
 use std::sync::Arc;
 
 use edge_domain::Domain;

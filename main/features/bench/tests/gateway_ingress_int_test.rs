@@ -5,7 +5,10 @@
 /// @covers: gateway::ingress
 #[test]
 fn test_gateway_ingress_placeholder_exists() {
-    // The ingress module is reserved for future CLI or HTTP trigger adapters.
-    // This test verifies that the gateway layer is structurally correct.
-    assert!(true);
+    // `gateway::ingress` is an empty placeholder reserved for future inbound
+    // trigger adapters, so it has no public surface of its own yet. The crate
+    // re-exports its public API through the gateway (`pub use gateway::*`);
+    // naming a re-exported type is a compile-time contract that the gateway
+    // layer resolves — it fails to compile if the gateway wiring is removed.
+    let _gateway_surface = core::marker::PhantomData::<swe_edge_autoscale_bench::BenchFacade>;
 }

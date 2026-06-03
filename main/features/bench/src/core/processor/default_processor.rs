@@ -36,7 +36,7 @@ mod tests {
     use super::*;
     use crate::api::bench::bench_config::BenchConfig;
     use crate::api::bench::bench_future::BenchFuture;
-    use crate::api::types::bench::bench_config_builder::BenchConfigBuilder;
+    use crate::api::bench::builder::BenchConfigBuilder;
 
     struct DefaultProcessorTestHandler;
     impl BenchHandler for DefaultProcessorTestHandler {

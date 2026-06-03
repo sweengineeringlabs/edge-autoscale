@@ -23,3 +23,11 @@ fn test_gateway_egress_exposes_report_type() {
 fn test_gateway_egress_exposes_step_result() {
     let _step: Option<StepResult> = None;
 }
+
+/// @covers: gateway::egress
+#[test]
+fn test_gateway_egress_exposes_bench_facade() {
+    // `BenchFacade` is the crate's primary entry point; this fails to compile if
+    // it stops being re-exported through the gateway.
+    let _facade: Option<BenchFacade> = None;
+}

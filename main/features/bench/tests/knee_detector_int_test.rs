@@ -1,6 +1,7 @@
 //! Integration tests for the `KneeDetector` trait and algorithm implementations.
 
-use std::sync::Arc;
+#![allow(clippy::unwrap_used, clippy::expect_used)]
+
 use swe_edge_autoscale_bench::{BenchConfig, BenchFacade, KneeDetector, StepResult};
 
 struct AlwaysKneeAtFirst;

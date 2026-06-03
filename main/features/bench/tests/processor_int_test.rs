@@ -1,6 +1,6 @@
 //! Integration tests for the `Processor` trait via `BenchFacade::run`.
 
-use std::sync::Arc;
+#![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use edge_domain::Domain;
 use swe_edge_autoscale_bench::{BenchConfig, BenchFacade};
