@@ -7,7 +7,29 @@ use super::knee_detection_config::KneeDetectionConfig;
 /// Top-level bench configuration.
 ///
 /// Loaded from the `[bench]` section of `application.toml` via
-/// [`swe_edge_configbuilder::ConfigSection::load`].
+/// [`swe_edge_configbuilder::ConfigSection::load`]. All fields have
+/// safe defaults; override only what you need.
+///
+/// # Examples
+///
+/// ```rust
+/// use swe_edge_autoscale_bench::BenchConfig;
+///
+/// // SWE baseline: probe 1→128 concurrency with 10s steps.
+/// let cfg = BenchConfig::default();
+/// assert_eq!(cfg.concurrency_steps, vec![1, 2, 4, 8, 16, 32, 64, 128]);
+/// assert_eq!(cfg.step_duration_secs, 10);
+/// assert_eq!(cfg.warmup_secs, 2);
+/// assert_eq!(cfg.safety_margin_pct, 70);
+///
+/// // Custom: fewer steps for a quick smoke test.
+/// let cfg = BenchConfig {
+///     concurrency_steps: vec![1, 4, 16],
+///     step_duration_secs: 5,
+///     ..BenchConfig::default()
+/// };
+/// assert_eq!(cfg.concurrency_steps.len(), 3);
+/// ```
 #[derive(Debug, Clone, Deserialize)]
 pub struct BenchConfig {
     /// Concurrency levels to probe, in ascending order.

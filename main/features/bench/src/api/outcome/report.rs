@@ -3,6 +3,40 @@
 use super::{autoscale_policy::AutoscalePolicy, step_result::StepResult};
 
 /// Full output of a bench run.
+///
+/// Returned by `BenchFacade::run`. Contains per-step measurements, the
+/// detected saturation knee index, and the ready-to-paste autoscale policy.
+/// Use [`summary_table`] for human-readable output or [`to_json`] for CI
+/// artifact storage.
+///
+/// [`summary_table`]: Report::summary_table
+/// [`to_json`]: Report::to_json
+///
+/// # Examples
+///
+/// ```rust
+/// use swe_edge_autoscale_bench::{AutoscalePolicy, Report, StepResult};
+///
+/// let report = Report {
+///     steps: vec![
+///         StepResult { concurrency: 1,  rps: 100.0, p50_ms: 5.0, p95_ms: 15.0, p99_ms: 30.0,  p99_9_ms: 60.0,  error_count: 0 },
+///         StepResult { concurrency: 4,  rps: 380.0, p50_ms: 8.0, p95_ms: 25.0, p99_ms: 50.0,  p99_9_ms: 90.0,  error_count: 0 },
+///         StepResult { concurrency: 16, rps: 420.0, p50_ms: 35.0, p95_ms: 110.0, p99_ms: 200.0, p99_9_ms: 400.0, error_count: 2 },
+///     ],
+///     knee_index: Some(1),
+///     policy: AutoscalePolicy { requests_active_max: 2, requests_per_sec_max: 266, latency_p99_ms_max: 35.0 },
+/// };
+///
+/// assert_eq!(report.knee_index, Some(1));
+/// assert_eq!(report.steps.len(), 3);
+///
+/// let table = report.summary_table();
+/// assert!(table.contains("Concurrency"));
+/// assert!(table.contains("<- knee"));
+///
+/// let json = report.to_json();
+/// assert!(json.contains("knee_concurrency"));
+/// ```
 #[derive(Debug)]
 pub struct Report {
     /// One entry per concurrency step, in probe order.
