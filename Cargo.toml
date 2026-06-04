@@ -20,7 +20,7 @@ tokio       = { version = "1.0", features = ["rt", "sync", "time", "macros", "rt
 toml        = "0.8"
 
 edge-domain            = { path = "../domain/main/features/domain" }
-swe-edge-configbuilder = { path = "../configbuilder/main/features/configbuilder" }
+swe-edge-configbuilder = { path = "../configbuilder/main/configbuilder" }
 
 [workspace.lints.rust]
 unsafe_code  = "deny"
