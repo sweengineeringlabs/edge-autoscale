@@ -1,7 +1,7 @@
 //! Inflection-based knee detection (Little's Law).
 
-use crate::api::knee::knee_detector::KneeDetector;
-use crate::api::outcome::step_result::StepResult;
+use crate::api::knee::traits::knee_detector::KneeDetector;
+use crate::api::vo::step_result::StepResult;
 
 /// Knee = first step where Δp99ms / ΔRPS_normalised exceeds `delta_ratio`.
 ///

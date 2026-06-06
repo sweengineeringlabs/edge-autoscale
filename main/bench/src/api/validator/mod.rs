@@ -1,1 +1,3 @@
-//! API layer interface for the validator module.
+//! Validator theme — pre-run bench configuration validation.
+
+pub(crate) mod traits;

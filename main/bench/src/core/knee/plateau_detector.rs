@@ -1,7 +1,7 @@
 //! Plateau-based knee detection.
 
-use crate::api::knee::knee_detector::KneeDetector;
-use crate::api::outcome::step_result::StepResult;
+use crate::api::knee::traits::knee_detector::KneeDetector;
+use crate::api::vo::step_result::StepResult;
 
 /// Knee = first step where RPS growth from the previous step falls below
 /// `rps_growth_pct` percent.

@@ -58,6 +58,7 @@ dependencies = [
 [[package]]
 name = "edge-domain"
 version = "0.1.0"
+source = "git+https://github.com/sweengineeringlabs/edge-domain.git?tag=v0.1.0#1af0d4daa829190ed18c207ddae46ea8d7247188"
 dependencies = [
  "async-trait",
  "futures",
@@ -392,6 +393,7 @@ dependencies = [
 [[package]]
 name = "swe-edge-configbuilder"
 version = "0.1.0"
+source = "git+https://github.com/sweengineeringlabs/edge-configbuilder.git?tag=v0.1.0#aa3c23c6b9373b75a859522640eaaada43f7c85d"
 dependencies = [
  "dirs",
  "regex",

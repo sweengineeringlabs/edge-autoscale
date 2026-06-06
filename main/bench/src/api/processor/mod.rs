@@ -1,1 +1,3 @@
-//! API layer interface for the processor module.
+//! Processor theme — the primary "run a benchmark" port.
+
+pub(crate) mod traits;

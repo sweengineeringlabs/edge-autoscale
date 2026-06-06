@@ -1,9 +1,9 @@
 //! Extension hooks for downstream consumers.
 //!
 //! Downstream crates that depend on `swe-edge-autoscale-bench` can implement
-//! [`crate::api::knee::knee_detector::KneeDetector`] to supply a custom
+//! [`crate::api::knee::traits::knee_detector::KneeDetector`] to supply a custom
 //! saturation detection algorithm, then wire it in via
-//! [`crate::api::types::bench::bench_runner::BenchRunner::with_knee_detector`].
+//! [`crate::api::types::bench_runner::BenchRunner::with_knee_detector`].
 //!
 //! ## Example
 //!
@@ -17,6 +17,8 @@
 //!     }
 //! }
 //! ```
+
+pub(crate) mod step;
 
 /// Extension point version — bumped when the SPI contract changes.
 pub(crate) const SPI_VERSION: u32 = 1;

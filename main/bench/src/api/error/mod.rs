@@ -1,4 +1,3 @@
-//! Error types for the bench crate.
-//!
-//! The primary error type is [`crate::api::bench::bench_error::BenchError`].
-//! This module exists to satisfy the `api/error/` structural requirement.
+//! Crate-wide error types.
+
+pub(crate) mod bench_error;

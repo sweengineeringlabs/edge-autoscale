@@ -1,7 +1,7 @@
 //! Default threshold advisor — applies a safety margin to knee step values.
 
-use crate::api::advisor::threshold_advisor::ThresholdAdvisor;
-use crate::api::outcome::{autoscale_policy::AutoscalePolicy, step_result::StepResult};
+use crate::api::advisor::traits::threshold_advisor::ThresholdAdvisor;
+use crate::api::vo::{autoscale_policy::AutoscalePolicy, step_result::StepResult};
 
 /// Multiplies every knee-step metric by `safety_margin_pct / 100`.
 ///

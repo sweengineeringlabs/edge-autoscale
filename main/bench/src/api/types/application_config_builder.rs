@@ -3,7 +3,7 @@
 //! Bridges `swe-edge-configbuilder` with [`BenchConfig`] so callers can
 //! load configuration through the standard config loader pipeline.
 
-use crate::api::bench::bench_config::BenchConfig;
+use crate::api::vo::bench_config::BenchConfig;
 
 /// Loads [`BenchConfig`] from the standard config loader pipeline.
 ///

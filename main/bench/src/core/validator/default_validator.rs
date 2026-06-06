@@ -1,8 +1,8 @@
 //! Default bench configuration validator.
 
-use crate::api::bench::bench_config::BenchConfig;
-use crate::api::bench::bench_error::BenchError;
-use crate::api::traits::Validator;
+use crate::api::error::bench_error::BenchError;
+use crate::api::validator::traits::Validator;
+use crate::api::vo::bench_config::BenchConfig;
 
 /// Validates that a [`BenchConfig`] meets minimum viability requirements.
 ///

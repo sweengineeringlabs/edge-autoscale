@@ -1,7 +1,3 @@
-//! Primary trait definitions for the bench processor crate.
+//! Cross-theme ports — contracts consumed by two or more themes.
 
-pub mod processor;
-pub mod validator;
-
-pub use processor::Processor;
-pub use validator::Validator;
+pub(crate) mod bench_handler;

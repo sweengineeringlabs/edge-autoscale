@@ -2,11 +2,11 @@
 
 use std::sync::Arc;
 
-use crate::api::bench::bench_error::BenchError;
-use crate::api::bench::bench_handler::BenchHandler;
-use crate::api::outcome::report::Report;
-use crate::api::traits::Processor;
-use crate::api::types::bench::bench_runner::BenchRunner;
+use crate::api::error::bench_error::BenchError;
+use crate::api::processor::traits::Processor;
+use crate::api::traits::bench_handler::BenchHandler;
+use crate::api::types::bench_runner::BenchRunner;
+use crate::api::vo::report::Report;
 
 /// Drives a full bench run against a wired-in [`BenchHandler`].
 ///
@@ -34,9 +34,9 @@ impl Processor for DefaultProcessor {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::api::bench::bench_config::BenchConfig;
-    use crate::api::bench::bench_future::BenchFuture;
-    use crate::api::bench::builder::BenchConfigBuilder;
+    use crate::api::types::bench_future::BenchFuture;
+    use crate::api::vo::bench_config::BenchConfig;
+    use crate::api::vo::bench_config_builder::BenchConfigBuilder;
 
     struct DefaultProcessorTestHandler;
     impl BenchHandler for DefaultProcessorTestHandler {
