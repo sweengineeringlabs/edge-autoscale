@@ -1,8 +1,0 @@
-# SEA project configuration (L0)
-[project]
-name = "swe-edge-autoscale"
-workspaces = ["bench"]
-
-[workspace.bench]
-path  = "main/features/bench"
-crate = "swe-edge-autoscale-bench"
