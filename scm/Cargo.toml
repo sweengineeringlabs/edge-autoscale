@@ -1,0 +1,74 @@
+[package]
+name         = "swe-edge-autoscale-bench"
+version      = "0.1.0"
+edition      = "2021"
+license      = "MIT OR Apache-2.0"
+rust-version = "1.95"
+authors      = ["SWE Engineering Labs"]
+repository   = "https://github.com/sweengineeringlabs/edge"
+description  = "edge — autoscale bench: load runner and saturation knee detector for autoscale threshold calibration"
+keywords     = ["autoscale", "bench", "load-runner", "sea", "swe"]
+categories   = ["development-tools"]
+
+[package.metadata.struct-engine]
+application_type = "lib"
+service_type     = "processor"
+
+[lib]
+path = "main/src/lib.rs"
+
+[dependencies]
+serde       = { version = "1.0", features = ["derive"] }
+thiserror   = "2"
+futures     = "0.3"
+tokio       = { version = "1.0", features = ["rt", "sync", "time", "macros", "rt-multi-thread"] }
+edge-domain = { git = "https://github.com/sweengineeringlabs/edge-domain.git", tag = "v0.1.0" }
+swe-edge-configbuilder = { git = "https://github.com/sweengineeringlabs/edge-configbuilder.git", tag = "v0.1.0" }
+
+[dev-dependencies]
+toml                   = "0.8"
+swe-edge-configbuilder = { git = "https://github.com/sweengineeringlabs/edge-configbuilder.git", tag = "v0.1.0" }
+
+[[test]]
+name = "bench_runner_int_test"
+path = "tests/bench_runner_int_test.rs"
+
+[[test]]
+name = "configbuilder_int_test"
+path = "tests/configbuilder_int_test.rs"
+
+[[test]]
+name = "validator_int_test"
+path = "tests/validator_int_test.rs"
+
+[[test]]
+name = "processor_int_test"
+path = "tests/processor_int_test.rs"
+
+[[test]]
+name = "saf_bench_int_test"
+path = "tests/saf_bench_int_test.rs"
+
+[[test]]
+name = "api_types_int_test"
+path = "tests/api_types_int_test.rs"
+
+[[test]]
+name = "knee_detector_int_test"
+path = "tests/knee_detector_int_test.rs"
+
+[[test]]
+name = "gateway_egress_int_test"
+path = "tests/gateway_egress_int_test.rs"
+
+[[test]]
+name = "gateway_ingress_int_test"
+path = "tests/gateway_ingress_int_test.rs"
+
+[lints.rust]
+unsafe_code  = "deny"
+missing_docs = "warn"
+
+[lints.clippy]
+unwrap_used = "deny"
+expect_used = "deny"
