@@ -1,5 +1,7 @@
 # swe-edge-autoscale
 
+> **TLDR:** Empirical load runner + saturation knee detector for swe-edge — drives stepped concurrency load, detects the throughput knee, and emits a ready-to-paste `[autoscale]` TOML block. See [Overview](scm/docs/README.md) for details.
+
 Load runner and autoscale threshold calibration for the `swe-edge` stack.
 
 ## What
@@ -45,7 +47,8 @@ println!("{}", report.summary_table());
 - `main/features/bench/src/saf/` — Public facade (BenchRunner factory, adapt_handler)
 - `main/features/bench/src/spi.rs` — KneeDetector extension hook for custom algorithms
 
-## Related Documents
+## Documentation
 
-- [Architecture](docs/3-design/architecture.md)
-- [Edge Architecture](../docs/3-architecture/architecture.md)
+| Document | Description |
+|----------|-------------|
+| [Overview](scm/docs/README.md) | WHAT + WHY — capabilities and design rationale |
