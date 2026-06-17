@@ -5,7 +5,7 @@ use crate::api::vo::{autoscale_policy::AutoscalePolicy, step_result::StepResult}
 /// Computes recommended autoscale thresholds from the knee step.
 ///
 /// The concrete implementation is
-/// [`crate::core::advisor::DefaultThresholdAdvisor`].
+/// `DefaultThresholdAdvisor`.
 pub trait ThresholdAdvisor: Send + Sync {
     /// Derive thresholds from `steps[knee_index]`, applying `safety_margin_pct`.
     fn advise(

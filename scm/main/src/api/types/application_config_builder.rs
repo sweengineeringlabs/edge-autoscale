@@ -14,7 +14,7 @@ pub struct ApplicationConfigBuilder {
 }
 
 impl ApplicationConfigBuilder {
-    /// Create a builder from an already-constructed [`SectionLoaderImpl`].
+    /// Create a builder from an already-constructed `SectionLoaderImpl`.
     pub fn new(loader: swe_edge_configbuilder::SectionLoaderImpl) -> Self {
         Self { loader }
     }

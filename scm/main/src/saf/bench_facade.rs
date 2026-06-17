@@ -9,9 +9,9 @@ use crate::api::types::bench_runner::BenchRunner;
 use crate::api::vo::bench_config::BenchConfig;
 
 impl BenchFacade {
-    /// Return a [`ConfigBuilderImpl`] pre-seeded with this crate's package name and version.
+    /// Return a `ConfigBuilderImpl` pre-seeded with this crate's package name and version.
     ///
-    /// The config builder is built against SPI version [`crate::spi::SPI_VERSION`].
+    /// The config builder is built against the SPI version recorded in `SPI_VERSION`.
     pub fn create_config_builder() -> swe_edge_configbuilder::ConfigBuilderImpl {
         let _spi_version = crate::spi::SPI_VERSION;
         swe_edge_configbuilder::ConfigLoaderFactory::create_config_builder()
@@ -56,7 +56,7 @@ impl BenchFacade {
     /// );
     /// ```
     pub fn adapt_handler<Req, Resp>(
-        handler: Arc<dyn edge_domain::Handler<Req, Resp>>,
+        handler: Arc<dyn edge_domain::Handler<Request = Req, Response = Resp>>,
         make_request: impl Fn() -> Req + Send + Sync + 'static,
     ) -> Arc<dyn BenchHandler>
     where
@@ -65,9 +65,20 @@ impl BenchFacade {
     {
         use crate::api::error::bench_error::BenchError;
         use crate::api::types::bench_future::BenchFuture;
+        use futures::future::BoxFuture as BenchBoxFuture;
+
+        struct BenchCommandBus;
+        impl edge_domain::CommandBus for BenchCommandBus {
+            fn dispatch(
+                &self,
+                _cmd: Box<dyn edge_domain::Command>,
+            ) -> BenchBoxFuture<'_, Result<(), edge_domain::CommandError>> {
+                Box::pin(async { Ok(()) })
+            }
+        }
 
         struct Adapter<Req, Resp> {
-            handler: Arc<dyn edge_domain::Handler<Req, Resp>>,
+            handler: Arc<dyn edge_domain::Handler<Request = Req, Response = Resp>>,
             make_request: Box<dyn Fn() -> Req + Send + Sync>,
         }
 
@@ -80,8 +91,11 @@ impl BenchFacade {
                 let req = (self.make_request)();
                 let handler = Arc::clone(&self.handler);
                 Box::pin(async move {
+                    let security = edge_domain::SecurityContext::unauthenticated();
+                    let commands = BenchCommandBus;
+                    let ctx = edge_domain::HandlerContext { security: &security, commands: &commands };
                     handler
-                        .execute(req)
+                        .execute(req, ctx)
                         .await
                         .map(|_| ())
                         .map_err(|e| BenchError::StepFailed(e.to_string()))
@@ -106,9 +120,9 @@ impl BenchFacade {
         crate::core::validator::DefaultValidator.validate(config)
     }
 
-    /// Run a complete bench and return the [`Report`].
+    /// Run a complete bench and return the `Report`.
     ///
-    /// This method is a convenience wrapper that creates a [`DefaultProcessor`]
+    /// This method is a convenience wrapper that creates a `DefaultProcessor`
     /// internally and drives the bench run via the `Processor` trait.
     pub async fn run(
         config: BenchConfig,
