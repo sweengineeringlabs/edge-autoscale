@@ -23,11 +23,11 @@ thiserror   = "2"
 futures     = "0.3"
 tokio       = { version = "1.52", features = ["rt", "sync", "time", "macros", "rt-multi-thread"] }
 edge-domain = { git = "https://github.com/sweengineeringlabs/edge-domain.git", tag = "v0.8.30", features = ["security"] }
-swe-edge-configbuilder = { git = "https://github.com/sweengineeringlabs/edge-configbuilder.git", tag = "v0.1.0" }
+swe-edge-configbuilder = { git = "https://github.com/sweengineeringlabs/edge-configbuilder.git", tag = "v0.4.1" }
 
 [dev-dependencies]
 toml                   = "0.8"
-swe-edge-configbuilder = { git = "https://github.com/sweengineeringlabs/edge-configbuilder.git", tag = "v0.1.0" }
+swe-edge-configbuilder = { git = "https://github.com/sweengineeringlabs/edge-configbuilder.git", tag = "v0.4.1" }
 
 [[test]]
 name = "bench_runner_int_test"
