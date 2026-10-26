@@ -1,10 +1,10 @@
-//! Integration tests exercising the `swe-edge-configbuilder` dependency.
+//! Integration tests exercising the `configbuilder` dependency.
 //!
 //! These tests ensure that `BenchConfig` correctly integrates with the
 //! configbuilder loading pipeline.
 
+use configbuilder::{BuilderFinalizer as _, ConfigSection as _};
 use swe_edge_autoscale_bench::{ApplicationConfigBuilder, BenchConfig, BenchFacade};
-use swe_edge_configbuilder::ConfigSection as _;
 
 /// @covers: BenchFacade::create_config_builder
 #[test]
