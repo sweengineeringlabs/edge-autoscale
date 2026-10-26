@@ -7,7 +7,7 @@ use crate::api::knee::vo::knee_detection_config::KneeDetectionConfig;
 /// Top-level bench configuration.
 ///
 /// Loaded from the `[bench]` section of `application.toml` via
-/// [`swe_edge_configbuilder::ConfigSection::load`]. All fields have
+/// [`configbuilder::ConfigSection::load`]. All fields have
 /// safe defaults; override only what you need.
 ///
 /// # Examples
@@ -83,7 +83,7 @@ impl Default for BenchConfig {
     }
 }
 
-impl swe_edge_configbuilder::ConfigSection for BenchConfig {
+impl configbuilder::ConfigSection for BenchConfig {
     fn section_name() -> &'static str {
         // TOML section key: `[bench]`
         const SECTION: &str = "bench";

@@ -4,6 +4,7 @@
 
 use std::sync::Arc;
 
+use configbuilder::BuilderFinalizer as _;
 use edge_domain::Domain;
 use swe_edge_autoscale_bench::{BenchConfig, BenchFacade};
 
@@ -130,7 +131,7 @@ async fn test_bench_runner_returns_error_for_empty_concurrency_steps() {
     );
 }
 
-/// Integration test exercising the `swe-edge-configbuilder` dependency.
+/// Integration test exercising the `configbuilder` dependency.
 ///
 /// @covers: BenchFacade::create_config_builder
 #[test]

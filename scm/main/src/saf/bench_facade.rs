@@ -1,5 +1,6 @@
 //! `BenchFacade` method implementations.
 
+use configbuilder::ConfigBuilder;
 use std::sync::Arc;
 
 use crate::api::knee::traits::knee_detector::KneeDetector;
@@ -12,9 +13,9 @@ impl BenchFacade {
     /// Return a `ConfigBuilderImpl` pre-seeded with this crate's package name and version.
     ///
     /// The config builder is built against the SPI version recorded in `SPI_VERSION`.
-    pub fn create_config_builder() -> swe_edge_configbuilder::ConfigBuilderImpl {
+    pub fn create_config_builder() -> configbuilder::ConfigBuilderImpl {
         let _spi_version = crate::spi::SPI_VERSION;
-        swe_edge_configbuilder::ConfigLoaderFactory::create_config_builder()
+        configbuilder::ConfigLoaderFactory::create_config_builder()
             .with_name(env!("CARGO_PKG_NAME"))
             .with_version(env!("CARGO_PKG_VERSION"))
     }
@@ -93,7 +94,10 @@ impl BenchFacade {
                 Box::pin(async move {
                     let security = edge_domain::SecurityContext::unauthenticated();
                     let commands = BenchCommandBus;
-                    let ctx = edge_domain::HandlerContext { security: &security, commands: &commands };
+                    let ctx = edge_domain::HandlerContext {
+                        security: &security,
+                        commands: &commands,
+                    };
                     handler
                         .execute(req, ctx)
                         .await
